@@ -3,6 +3,7 @@ import SDKClient from './common/SDKClient'
 import { Utils } from './common/Utils'
 import DepositManager from './root/DepositManager'
 import POSRootChainManager from './root/POSRootChainManager'
+import POSMetaTransactionManager from './root/POSMetaTransactionManager'
 import Registry from './root/Registry'
 import RootChain from './root/RootChain'
 import WithdrawManager from './root/WithdrawManager'
@@ -11,6 +12,7 @@ import { address, MaticClientInitializationOptions, order, SendOptions } from '.
 export class MaticPOSClient extends SDKClient {
   private rootChain: RootChain
   private posRootChainManager: POSRootChainManager
+  private posMetaTransactionManager: POSMetaTransactionManager
 
   constructor(options: any = {}) {
     options.network = SDKClient.initializeNetwork(options.network, options.version)
@@ -20,6 +22,7 @@ export class MaticPOSClient extends SDKClient {
     super(options)
     this.rootChain = new RootChain(options, this.web3Client)
     this.posRootChainManager = new POSRootChainManager(options, this.rootChain, this.web3Client)
+    this.posMetaTransactionManager = new POSMetaTransactionManager(options, this.posRootChainManager)
   }
 
   approveERC20ForDeposit(rootToken: address, amount: BN | string, options?: SendOptions) {
@@ -69,6 +72,9 @@ export class MaticPOSClient extends SDKClient {
     if (options && !options.from) {
       throw new Error(`options.from is missing`)
     }
+    if (options && options.metaTx) {
+      return this.posMetaTransactionManager.burnERC20(childToken, amount, options)
+    }
     return this.posRootChainManager.burnERC20(childToken, amount, options)
   }
 
@@ -79,11 +85,13 @@ export class MaticPOSClient extends SDKClient {
     if (options && !options.from) {
       throw new Error(`from missing`)
     }
+    if (options && options.metaTx) {
+      return this.posMetaTransactionManager.exitERC20(txHash, options)
+    }
     if (options && options.legacyProof) {
       return this.posRootChainManager.exitERC20(txHash, options)
-    } else {
-      return this.posRootChainManager.exitERC20Hermoine(txHash, options)
-    }
+    } 
+    return this.posRootChainManager.exitERC20Hermoine(txHash, options)
   }
 
   isERC20ExitProcessed(txHash: string) {
