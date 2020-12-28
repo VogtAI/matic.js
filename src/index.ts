@@ -60,6 +60,20 @@ export class MaticPOSClient extends SDKClient {
     }
     return this.posRootChainManager.depositEtherForUser(amount, user, options)
   }
+  
+  withdrawETHMetaTx(amount: BN | string, gas: BN | string, options?: SendOptions) {
+    if (!this.web3Client.web3.utils.isAddress(childToken)) {
+      throw new Error(`${childToken} is not a valid token address`)
+    }
+    if (!amount) {
+      // ${amount} will stringify it while printing which might be a problem
+      throw new Error(`${amount} is not a amount`)
+    }
+    if (options && !options.from) {
+      throw new Error(`options.from is missing`)
+    }
+    return this.posMetaTransactionManager.withdrawETHMetaTx(amount, gas, options)
+  }
 
   burnERC20(childToken: address, amount: BN | string, options?: SendOptions) {
     if (!this.web3Client.web3.utils.isAddress(childToken)) {
@@ -72,9 +86,6 @@ export class MaticPOSClient extends SDKClient {
     if (options && !options.from) {
       throw new Error(`options.from is missing`)
     }
-    if (options && options.metaTx) {
-      return this.posMetaTransactionManager.burnERC20(childToken, amount, options)
-    }
     return this.posRootChainManager.burnERC20(childToken, amount, options)
   }
 
@@ -85,15 +96,12 @@ export class MaticPOSClient extends SDKClient {
     if (options && !options.from) {
       throw new Error(`from missing`)
     }
-    if (options && options.metaTx) {
-      return this.posMetaTransactionManager.exitERC20(txHash, options)
-    }
     if (options && options.legacyProof) {
       return this.posRootChainManager.exitERC20(txHash, options)
     } 
     return this.posRootChainManager.exitERC20Hermoine(txHash, options)
   }
-
+  
   isERC20ExitProcessed(txHash: string) {
     if (!txHash) {
       throw new Error(`txHash not provided`)
