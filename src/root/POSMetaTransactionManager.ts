@@ -5,7 +5,6 @@ import BN from 'bn.js'
 
 import POSRootChainManager from './root/POSRootChainManager'
 import { address, MaticClientInitializationOptions, order, SendOptions } from './types/Common'
-const { getTypedData } = require("./meta-tx")
 
 const logger = {
   info: require('debug')('maticjs:Web3Client'),
@@ -83,7 +82,7 @@ export default class POSMetaTransactionManager {
       data
     })
 
-    const dataToSign = getTypedData({
+    const dataToSign = this.getTypedData({
       name: name,
       version: '1',
       salt: salt, // this is actually the chainid 137
@@ -152,4 +151,45 @@ export default class POSMetaTransactionManager {
     return this.metaTx(data, this.web3Client.getMaticWeb3().eth.accounts.givenProvider.selectedAddress, this.childTokenName, this.childToken, true)
   }
 
+  getTypedData({ name, version, salt, verifyingContract, nonce, from, functionSignature }) {
+    return {
+        types: {
+        EIP712Domain: [{
+            name: 'name',
+            type: 'string'
+        }, {
+            name: 'version',
+            type: 'string'
+        }, {
+            name: 'verifyingContract',
+            type: 'address'
+        }, {
+            name: 'salt',
+            type: 'bytes32'
+        }],
+        MetaTransaction: [{
+            name: 'nonce',
+            type: 'uint256'
+        }, {
+            name: 'from',
+            type: 'address'
+        }, {
+            name: 'functionSignature',
+            type: 'bytes'
+        }]
+        },
+        domain: {
+        name,
+        version,
+        verifyingContract,
+        salt
+        },
+        primaryType: 'MetaTransaction',
+        message: {
+        nonce,
+        from,
+        functionSignature
+        }
+    }
+  }
 }
