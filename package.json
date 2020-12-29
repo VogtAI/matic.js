@@ -10,7 +10,7 @@
     "lib",
     "dist",
     "artifacts",
-    "types"
+    "types",
     "dist"
   ]
   "scripts": {
