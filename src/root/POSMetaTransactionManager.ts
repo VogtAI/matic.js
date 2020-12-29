@@ -3,8 +3,9 @@ import fetch from 'node-fetch'
 import Web3Client from '../common/Web3Client'
 import BN from 'bn.js'
 
-import POSRootChainManager from './root/POSRootChainManager'
-import { address, MaticClientInitializationOptions, order, SendOptions } from './types/Common'
+import POSRootChainManager from './POSRootChainManager'
+import { address, MaticClientInitializationOptions, order, SendOptions } from '../types/Common'
+import { AbiItem } from "web3-utils";
 
 const logger = {
   info: require('debug')('maticjs:Web3Client'),
@@ -123,7 +124,7 @@ export default class POSMetaTransactionManager {
   }
   
    async transferWETH(...args) {
-    let functionAbi = {
+    let functionAbi = new AbiItem({
         "inputs": [
             {
                 "internalType": "address",
@@ -146,7 +147,7 @@ export default class POSMetaTransactionManager {
         ],
         "stateMutability": "nonpayable",
         "type": "function"
-    }
+    })
     let data = await this.web3Client.getMaticWeb3().eth.abi.encodeFunctionCall(functionAbi, [...args])
     return this.metaTx(data, this.web3Client.getMaticWeb3().eth.accounts.givenProvider.selectedAddress, this.childTokenName, this.childToken, true)
   }
