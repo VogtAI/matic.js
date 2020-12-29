@@ -97,7 +97,7 @@ export default class POSMetaTransactionManager {
     })
     const msgParams = [addr, JSON.stringify(dataToSign)]
 
-    let sig = await this.web3Client.parentWeb3.sendAsync({
+    let sig = await this.web3Client.sendAsync({
       method: 'eth_signTypedData_v4',
       params: msgParams,
       from: addr
