@@ -65,12 +65,15 @@ export default class POSMetaTransactionManager {
   async metaTx(functionSig: string, addr: string, name: string, verifyingContract: string, matic = true) {
     let salt
 
+    let web3provider; 
     if (matic) {
       salt = "0x0000000000000000000000000000000000000000000000000000000000000089"
+      web3provider = this.web3Client.getMaticWeb3()
     } else {
       salt = "0x0000000000000000000000000000000000000000000000000000000000000001"
+      web3provider = this.web3Client.parentWeb3
     }
-    let data = await this.web3Client.getMaticWeb3().eth.abi.encodeFunctionCall({
+    let data = await web3provider.eth.abi.encodeFunctionCall({
       name: 'getNonce',
       type: 'function',
       inputs: [{
@@ -78,7 +81,7 @@ export default class POSMetaTransactionManager {
         type: "address"
       }]
     }, [addr])
-    let _nonce = await this.web3Client.getMaticWeb3().eth.call({
+    let _nonce = await web3provider.eth.call({
       to: verifyingContract,
       data
     })
@@ -94,9 +97,10 @@ export default class POSMetaTransactionManager {
     })
     const msgParams = [addr, JSON.stringify(dataToSign)]
 
-    let sig = await this.web3Client.parentWeb3.eth.request({
+    let sig = await this.web3Client.parentWeb3.sendAsync({
       method: 'eth_signTypedData_v4',
-      params: msgParams
+      params: msgParams,
+      from: addr
     })
 
     let txObj = {
