@@ -11,8 +11,11 @@
     "dist",
     "artifacts",
     "types"
-    "dist"
-  ],
+    "dist",
+    "dist/dist/matic.umd.js",
+    "dist/dist/matic.node.js",
+    "types/lib/index.d.ts"
+  ]
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build"
