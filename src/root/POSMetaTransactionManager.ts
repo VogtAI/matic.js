@@ -40,7 +40,7 @@ export default class POSMetaTransactionManager {
   async withdrawETHMetaTx(amount: BN | string, gas: BN | string, options?: SendOptions) {
     this.relayerAddress = (await fetch(this.metaTxEndpoint)).address
     options.encodeAbi = true
-    const gasTx = await this.transferWETH(this.relayerAddress, gas)
+    const gasTx = await this.transferWETH(options.from, this.relayerAddress, gas) //todo options.from not needed
     const burnRes = await this.posRootChainManager.burnERC20(this.childToken, amount, options)
     const burnTx = await this.metaTx(burnRes.data, burnRes.from, this.childTokenName, burnRes.to) //todo different token names
     const burnTxHash = await this.postData(this.metaTxEndpoint+"/burn", { burnTx, gasTx })
@@ -128,7 +128,7 @@ export default class POSMetaTransactionManager {
     return response.json() 
   }
   
-   async transferWETH(...args) {
+   async transferWETH(from, ...args) {
     let functionAbi = <AbiItem> {
         "inputs": [
             {
@@ -154,7 +154,7 @@ export default class POSMetaTransactionManager {
         "type": "function"
     }
     let data = await this.web3Client.getMaticWeb3().eth.abi.encodeFunctionCall(functionAbi, [...args])
-    return this.metaTx(data, addr, this.childTokenName, this.childToken, true)
+    return this.metaTx(data, from, this.childTokenName, this.childToken, true)
   }
 
   getTypedData({ name, version, salt, verifyingContract, nonce, from, functionSignature }) {
