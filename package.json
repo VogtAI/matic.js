@@ -13,15 +13,8 @@
     "types"
   ],
   "scripts": {
-    "clean": "rimraf lib dist",
-    "build:webpack": "webpack --env build",
     "build": "tsc",
-    "prepublishOnly": "npm run lint && npm run clean && npm run build && npm run build:webpack",
-    "lint": "eslint --ext .ts src",
-    "lint:fix": "eslint --ext .ts src --fix",
-    "test": "mocha --require @babel/register --colors ./test/**/*.spec.js",
-    "test:watch": "mocha --require @babel/register --colors -w ./test/**/*.spec.js",
-    "testrpc": "ganache-cli --mnemonic 'clock radar mass judge dismiss just intact mind resemble fringe diary casino' --gasLimit 13000000"
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
