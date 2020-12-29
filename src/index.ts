@@ -22,7 +22,7 @@ export class MaticPOSClient extends SDKClient {
     super(options)
     this.rootChain = new RootChain(options, this.web3Client)
     this.posRootChainManager = new POSRootChainManager(options, this.rootChain, this.web3Client)
-    this.posMetaTransactionManager = new POSMetaTransactionManager(options, this.posRootChainManager)
+    this.posMetaTransactionManager = new POSMetaTransactionManager(options, this.posRootChainManager, this.web3Client)
   }
 
   approveERC20ForDeposit(rootToken: address, amount: BN | string, options?: SendOptions) {
@@ -62,9 +62,6 @@ export class MaticPOSClient extends SDKClient {
   }
   
   withdrawETHMetaTx(amount: BN | string, gas: BN | string, options?: SendOptions) {
-    if (!this.web3Client.web3.utils.isAddress(childToken)) {
-      throw new Error(`${childToken} is not a valid token address`)
-    }
     if (!amount) {
       // ${amount} will stringify it while printing which might be a problem
       throw new Error(`${amount} is not a amount`)
