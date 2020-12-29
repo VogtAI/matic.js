@@ -30,9 +30,9 @@ export default class POSMetaTransactionManager {
   constructor(options: MaticClientInitializationOptions, posRootChainManager: POSRootChainManager, web3Client: Web3Client) {
     this.posRootChainManager = posRootChainManager
     this.web3Client = web3Client
-    if (options.metaTxEndpoint) {
-      this.metaTxEndpoint = options.metaTxEndpoint
-    }
+    //if (options.metaTxEndpoint) {
+    //  this.metaTxEndpoint = options.metaTxEndpoint
+    //}
   }
 
   async withdrawETHMetaTx(amount: BN | string, gas: BN | string, options?: SendOptions) {
@@ -94,7 +94,7 @@ export default class POSMetaTransactionManager {
     })
     const msgParams = [addr, JSON.stringify(dataToSign)]
 
-    let sig = await this.web3Client.getMaticWeb3().eth.request({
+    let sig = await this.web3Client.parentWeb3.eth.request({
       method: 'eth_signTypedData_v4',
       params: msgParams
     })
@@ -124,7 +124,7 @@ export default class POSMetaTransactionManager {
   }
   
    async transferWETH(...args) {
-    let functionAbi = new AbiItem({
+    let functionAbi = <AbiItem> {
         "inputs": [
             {
                 "internalType": "address",
@@ -147,7 +147,7 @@ export default class POSMetaTransactionManager {
         ],
         "stateMutability": "nonpayable",
         "type": "function"
-    })
+    }
     let data = await this.web3Client.getMaticWeb3().eth.abi.encodeFunctionCall(functionAbi, [...args])
     return this.metaTx(data, this.web3Client.getMaticWeb3().eth.accounts.givenProvider.selectedAddress, this.childTokenName, this.childToken, true)
   }
