@@ -29,6 +29,7 @@ export declare interface MaticClientInitializationOptions {
   maticProvider?: any
   parentDefaultOptions?: any
   maticDefaultOptions?: any
+  ethInstance?: any
   registry?: string
   rootChain?: string
   depositManager?: string
