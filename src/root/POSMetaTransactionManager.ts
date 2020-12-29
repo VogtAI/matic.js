@@ -21,15 +21,17 @@ export default class POSMetaTransactionManager {
   private posRootChainManager: POSRootChainManager
   private web3Client: Web3Client
   private relayerAddress: string
+  private ethInstance: any
 
   private metaTxEndpoint = "https://ethereumads.com/api/v1.0/metatx"
   private childToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
   private childTokenName = "Wrapped Ether"
   private rootChainManagerProxy = "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77"
 
-  constructor(options: MaticClientInitializationOptions, posRootChainManager: POSRootChainManager, web3Client: Web3Client) {
+  constructor(options: MaticClientInitializationOptions, posRootChainManager: POSRootChainManager, web3Client: Web3Client, ethInstance: any) {
     this.posRootChainManager = posRootChainManager
     this.web3Client = web3Client
+    this.ethInstance = ethInstance
     //if (options.metaTxEndpoint) {
     //  this.metaTxEndpoint = options.metaTxEndpoint
     //}
@@ -97,10 +99,9 @@ export default class POSMetaTransactionManager {
     })
     const msgParams = [addr, JSON.stringify(dataToSign)]
 
-    let sig = await this.web3Client.sendAsync({
+    let sig = await this.ethInstance.request({
       method: 'eth_signTypedData_v4',
       params: msgParams,
-      from: addr
     })
 
     let txObj = {
@@ -153,7 +154,7 @@ export default class POSMetaTransactionManager {
         "type": "function"
     }
     let data = await this.web3Client.getMaticWeb3().eth.abi.encodeFunctionCall(functionAbi, [...args])
-    return this.metaTx(data, this.web3Client.getMaticWeb3().eth.accounts.givenProvider.selectedAddress, this.childTokenName, this.childToken, true)
+    return this.metaTx(data, addr, this.childTokenName, this.childToken, true)
   }
 
   getTypedData({ name, version, salt, verifyingContract, nonce, from, functionSignature }) {
