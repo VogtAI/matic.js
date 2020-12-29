@@ -22,7 +22,9 @@ export class MaticPOSClient extends SDKClient {
     super(options)
     this.rootChain = new RootChain(options, this.web3Client)
     this.posRootChainManager = new POSRootChainManager(options, this.rootChain, this.web3Client)
-    this.posMetaTransactionManager = new POSMetaTransactionManager(options, this.posRootChainManager, this.web3Client)
+    if (options && options.ethInstance) {
+      this.posMetaTransactionManager = new POSMetaTransactionManager(options, this.posRootChainManager, this.web3Client, options.ethInstance)
+    }
   }
 
   approveERC20ForDeposit(rootToken: address, amount: BN | string, options?: SendOptions) {
