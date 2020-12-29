@@ -12,9 +12,8 @@
     "artifacts",
     "types"
     "dist",
-    "dist/dist/matic.umd.js",
-    "dist/dist/matic.node.js",
-    "types/lib/index.d.ts"
+    "dist/matic.umd.js",
+    "dist/matic.node.js",
   ]
   "scripts": {
     "build": "tsc",
