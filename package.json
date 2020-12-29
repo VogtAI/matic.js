@@ -10,9 +10,8 @@
     "lib",
     "dist",
     "artifacts",
-    "types",
-    "dist"
-  ]
+    "types"
+  ],
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build"
