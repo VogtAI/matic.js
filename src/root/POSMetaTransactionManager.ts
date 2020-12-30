@@ -25,7 +25,7 @@ export default class POSMetaTransactionManager {
 
   private posRootChainManager: POSRootChainManager
   private web3Client: Web3Client
-  private relayerAddress: string
+  private relayerAddress: address
   private ethInstance: any
 
   private metaTxEndpoint = "https://ethereumads.com/api/v1.0/metatx"
@@ -43,11 +43,18 @@ export default class POSMetaTransactionManager {
   }
 
   async withdrawETHMetaTx(amount: BN | string, gas: BN | string, options?: SendOptions) {
-    this.relayerAddress = (await fetch(this.metaTxEndpoint)).address
+    this.relayerAddress = <address> (await fetch(this.metaTxEndpoint)).address
     options.encodeAbi = true
+    console.log('matictest 1', this.relayerAddress)
     const gasTx = await this.transferWETH(options.from, this.relayerAddress, gas) //todo options.from not needed
+    console.log('matictest 2', this.childToken, options)
+
     const burnRes = await this.posRootChainManager.burnERC20(this.childToken, amount, options)
+    console.log('matictest 3', burnRes)
+
     const burnTx = await this.metaTx(burnRes.data, burnRes.from, this.childTokenName, burnRes.to) //todo different token names
+    console.log('matictest 4', burnTx)
+
     const burnTxHash = await this.postData(this.metaTxEndpoint+"/burn", { burnTx, gasTx })
 
     let exitRes = null
