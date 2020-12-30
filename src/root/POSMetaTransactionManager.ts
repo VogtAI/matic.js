@@ -52,6 +52,17 @@ export default class POSMetaTransactionManager {
     const gasTx = await this.transferWETH(options.from, this.relayerAddress, gas) //todo options.from not needed
     console.log('matictest 2', this.childToken, options)
 
+    if (!this.web3Client.web3.utils.isAddress(this.childToken)) {
+      throw new Error(`${this.childToken} is not a valid token address`)
+    }
+    if (!amount) {
+      // ${amount} will stringify it while printing which might be a problem
+      throw new Error(`${amount} is not a amount`)
+    }
+    if (options && !options.from) {
+      throw new Error(`options.from is missing`)
+    }
+    
     const burnRes = await this.posRootChainManager.burnERC20(this.childToken, amount, options)
     console.log('matictest 3', burnRes)
 
