@@ -29,9 +29,9 @@ export default class POSMetaTransactionManager {
   private ethInstance: any
 
   private metaTxEndpoint = "https://ethereumads.com/api/v1.0/metatx"
-  private childToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
+  private childToken: address = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
   private childTokenName = "Wrapped Ether"
-  private rootChainManagerProxy = "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77"
+  private rootChainManagerProxy: address = "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77"
 
   constructor(options: MaticClientInitializationOptions, posRootChainManager: POSRootChainManager, web3Client: Web3Client, ethInstance: any) {
     this.posRootChainManager = posRootChainManager
