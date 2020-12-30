@@ -43,7 +43,10 @@ export default class POSMetaTransactionManager {
   }
 
   async withdrawETHMetaTx(amount: BN | string, gas: BN | string, options?: SendOptions) {
-    this.relayerAddress = <address> (await fetch(this.metaTxEndpoint)).address
+    const metaTxEndpointInfo = (await (await fetch(this.metaTxEndpoint)).json())
+    console.log('matictest 0', fetch, this.metaTxEndpoint, metaTxEndpointInfo, metaTxEndpointInfo.address)
+
+    this.relayerAddress = <address> metaTxEndpointInfo.address
     options.encodeAbi = true
     console.log('matictest 1', this.relayerAddress)
     const gasTx = await this.transferWETH(options.from, this.relayerAddress, gas) //todo options.from not needed
