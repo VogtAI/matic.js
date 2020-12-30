@@ -1,4 +1,9 @@
-import fetch from 'node-fetch'
+let fetch;
+try {
+  fetch = require('node-fetch'); // eslint-disable-line global-require
+} catch (Exception) {
+  fetch = window.fetch.bind(window);
+}
 
 import Web3Client from '../common/Web3Client'
 import BN from 'bn.js'
