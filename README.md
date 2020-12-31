@@ -19,6 +19,16 @@ await maticPOSClient.withdrawETHMetaTx(
 Example:
 
 ```js
+const getMaticPOSClient = () => {
+  return new MaticPOSClient({
+    network: 'mainnet',
+    version: 'v1',
+    parentProvider: provider,
+    parentDefaultOptions: { from: user },
+    ethInstance: window['ethereum'] // todo: probably unnecessary hack for signing.
+  })
+}
+
 const amount = web3.utils.toWei('0.1') // withdraw 0.1 ETH
 const GAS_COST = 300000
 const gasObj =  (await (await fetch('https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=YourApiKeyToken')).json())
