@@ -1,3 +1,37 @@
+# This fork implements MetaTransactions for ETH withdrawal
+
+Case study:
+
+The project [EthereumAds](https://ethereumads.com) pays its advertisers in WETH on Matic's POS portal. Practically neither of these advertisers owns both ETH and Matic tokens making both burnERC20 and exitERC20 impossible.
+
+Solution:
+
+To tackle this problem we make use of MetaTransactions, i.e. a 3rd party submits the transactions which were previously signed by the dapp users to the Matic and Ethereum network respectively. We provide a default hosted instance so everything works out of the box. You can switch to your own endpoint once we tidied up and released the server code. The gas cost per transaction is 300,000.
+
+```js
+await maticPOSClient.withdrawETHMetaTx(
+  amount: BN | string, // amount in wei to withdraw
+  gas: BN | string, // amount of gas in wei to use; you should calculate this by multiplying the current gas price on Ethereum by 300,000
+  options?: SendOptions // transaction fields, can be skipped if default options are set
+)
+```
+
+Example:
+
+```js
+const amount = web3.utils.toWei('0.1') // withdraw 0.1 ETH
+const GAS_LIMIT = 300000
+const gasObj =  (await (await fetch('https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=YourApiKeyToken')).json())
+const gasPriceGwei = parseInt(gasObj.result.ProposeGasPrice) || 50
+const gas = (GAS_LIMIT * gasPriceGwei).toString() + "000000000"
+await maticPOSClient.withdrawETHMetaTx(
+  amount: amount, // amount in wei to withdraw
+  gas: gas, // amount of gas in wei to use; you should calculate this by multiplying the current gas price on Ethereum by 300,000
+)
+```
+
+Status: beta testing
+
 # Matic SDK
 
 ![Build Status](https://github.com/maticnetwork/matic.js/workflows/CI/badge.svg?branch=master)
