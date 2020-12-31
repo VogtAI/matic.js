@@ -2,7 +2,7 @@
 
 Case study:
 
-The project [EthereumAds](https://ethereumads.com) pays its advertisers in WETH on Matic's POS portal. Practically neither of these advertisers owns both ETH and Matic tokens making both burnERC20 and exitERC20 impossible.
+The project [EthereumAds](https://ethereumads.com) pays its advertisers in WETH on Matic's POS portal. Practically none of these advertisers owns both ETH and Matic tokens making both burnERC20 and exitERC20 impossible.
 
 Solution:
 
@@ -20,10 +20,10 @@ Example:
 
 ```js
 const amount = web3.utils.toWei('0.1') // withdraw 0.1 ETH
-const GAS_LIMIT = 300000
+const GAS_COST = 300000
 const gasObj =  (await (await fetch('https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=YourApiKeyToken')).json())
 const gasPriceGwei = parseInt(gasObj.result.ProposeGasPrice) || 50
-const gas = (GAS_LIMIT * gasPriceGwei).toString() + "000000000"
+const gas = (GAS_COST * gasPriceGwei).toString() + "000000000"
 await maticPOSClient.withdrawETHMetaTx(
   amount: amount, // amount in wei to withdraw
   gas: gas, // amount of gas in wei to use; you should calculate this by multiplying the current gas price on Ethereum by 300,000
