@@ -28,6 +28,7 @@ const getMaticPOSClient = () => {
     ethInstance: window['ethereum'] // todo: probably unnecessary hack for signing.
   })
 }
+const maticPOSClient = getMaticPOSClient();
 
 const amount = web3.utils.toWei('0.1') // withdraw 0.1 ETH
 const GAS_COST = 300000
